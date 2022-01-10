@@ -1,6 +1,21 @@
-import { createStore } from 'redux';
+import { applyMiddleware, createStore } from 'redux';
+import thunk from 'redux-thunk';
+import { routerMiddleware } from 'connected-react-router';
+import { composeWithDevTools } from 'redux-devtools-extension';
+
+import logger from './middleware/logger';
+import generateId from './middleware/generateId';
+import api from './middleware/api';
+
 import reducer from './reducer';
+import history from '../history';
 
-const store = createStore(reducer);
+const enhancer = applyMiddleware(
+  thunk,
+  routerMiddleware(history),
+  api,
+  generateId,
+  logger
+);
 
-export default store;
+export default createStore(reducer, composeWithDevTools(enhancer));
